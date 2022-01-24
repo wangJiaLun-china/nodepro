@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">
+      <!--使用数据绑定指令做数据渲染-->
+      <a v-bind:href="site" target="_blank">{{company}}</a>
+      <input type="text" v-bind:value="company" />
+    </div>
+
+    <script src="vue.js"></script>
+    <script>
+      new Vue({
+        el: '#app',
+        data: {
+          company: '双向绑定',
+          site: 'http://www.baidu.com',
+        },
+      })
+    </script>
+  </body>
+</html>
