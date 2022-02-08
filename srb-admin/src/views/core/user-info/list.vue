@@ -73,7 +73,9 @@
           <el-tag v-if="scope.row.status === 0" type="danger" size="mini">
             锁定
           </el-tag>
-          <el-tag v-else type="success" size="mini">正常</el-tag>
+          <el-tag v-else type="success" size="mini">
+            正常
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" width="200">
@@ -94,6 +96,7 @@
           >
             解锁
           </el-button>
+
           <el-button
             type="primary"
             size="mini"
@@ -110,9 +113,9 @@
       :current-page="page"
       :total="total"
       :page-size="limit"
-      :page-sizes="[10, 20]"
-      style="padding: 30px 0"
-      layout="total, sizes, prev, pager, next, jumper"
+      :page-sizes="[5, 10, 30]"
+      style="padding: 30px 0; "
+      layout="total, sizes, prev, pager, next, ->, jumper"
       @size-change="changePageSize"
       @current-change="changeCurrentPage"
     />
@@ -140,58 +143,57 @@ export default {
       limit: 10, // 每页记录数
       searchObj: {}, // 查询条件
       loginRecordList: [], //会员登录日志
-      dialogTableVisible: false, //对话框是否显示
+      dialogTableVisible: false //对话框是否显示
     }
   },
 
   created() {
-    // 当页面加载时获取数据
     this.fetchData()
   },
 
   methods: {
+    changePageSize(size) {
+      console.log('size', size)
+      this.limit = size
+      this.fetchData()
+    },
+
+    changeCurrentPage(page) {
+      console.log('page', page)
+      this.page = page
+      this.fetchData()
+    },
+
     fetchData() {
       userInfoApi
         .getPageList(this.page, this.limit, this.searchObj)
-        .then((response) => {
+        .then(response => {
           this.list = response.data.pageModel.records
           this.total = response.data.pageModel.total
         })
     },
 
-    // 每页记录数改变，size：回调参数，表示当前选中的“每页条数”
-    changePageSize(size) {
-      this.limit = size
-      this.fetchData()
-    },
-
-    // 改变页码，page：回调参数，表示当前选中的“页码”
-    changeCurrentPage(page) {
-      this.page = page
-      this.fetchData()
-    },
-
-    // 重置表单
     resetData() {
+      //还原表单
       this.searchObj = {}
+      //重新查询
       this.fetchData()
     },
-    // 锁定和解锁
+
     lock(id, status) {
-      userInfoApi.lock(id, status).then((response) => {
+      userInfoApi.lock(id, status).then(response => {
         this.$message.success(response.message)
         this.fetchData()
       })
     },
-    // 根据id查询会员日志记录
+
     showLoginRecord(id) {
-      //打开对话框
       this.dialogTableVisible = true
-      //加载数据列表
-      userInfoApi.getuserLoginRecordTop50(id).then((response) => {
+
+      userInfoApi.getuserLoginRecordTop50(id).then(response => {
         this.loginRecordList = response.data.list
       })
-    },
-  },
+    }
+  }
 }
 </script>

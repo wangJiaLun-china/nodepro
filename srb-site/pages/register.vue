@@ -94,29 +94,20 @@ export default {
   },
 
   methods: {
-    //注册
-    register() {
-      this.$axios
-        .$post('/api/core/userInfo/register', this.userInfo)
-        .then((response) => {
-          this.step = 2
-        })
-    },
     //发短信
     send() {
       if (!this.userInfo.mobile) {
-        this.$message.error('请输入手机号')
+        this.$message.error('请输入手机号码')
         return
       }
 
-      //防止重复提交
+      //防止重复提交，显示倒计时
       if (this.sending) return
       this.sending = true
 
       //倒计时
       this.timeDown()
 
-      //远程调用发送短信的接口
       this.$axios
         .$get('/api/sms/send/' + this.userInfo.mobile)
         .then((response) => {
@@ -126,21 +117,27 @@ export default {
 
     //倒计时
     timeDown() {
-      console.log('进入倒计时')
+      console.log('倒计时')
       this.leftSecond = this.second
-      //创建定时器
+
       const timmer = setInterval(() => {
-        //计数器减一
+        // console.log(new Date())
         this.leftSecond--
         if (this.leftSecond <= 0) {
-          //停止定时器
+          //停止计时
           clearInterval(timmer)
-          //还原计数器
-          this.leftSecond = this.second
-          //还原按钮状态
           this.sending = false
         }
       }, 1000)
+    },
+
+    //注册
+    register() {
+      this.$axios
+        .$post('/api/core/userInfo/register', this.userInfo)
+        .then((response) => {
+          this.step = 2
+        })
     },
   },
 }

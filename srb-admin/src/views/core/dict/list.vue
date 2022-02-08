@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
-    <div style="margin-bottom: 10px">
+    <div style="margin-bottom: 10px;">
+      <!-- Excel导入按钮 -->
       <el-button
         @click="dialogVisible = true"
         type="primary"
@@ -9,6 +10,8 @@
       >
         导入Excel
       </el-button>
+
+      <!-- Excel导出按钮 -->
       <el-button
         @click="exportData"
         type="primary"
@@ -19,6 +22,7 @@
       </el-button>
     </div>
 
+    <!-- dialog -->
     <el-dialog title="数据字典导入" :visible.sync="dialogVisible" width="30%">
       <el-form>
         <el-form-item label="请选择Excel文件">
@@ -38,10 +42,13 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button @click="dialogVisible = false">
+          取消
+        </el-button>
       </div>
     </el-dialog>
-    <el-table :data="list" border row-key="id" lazy :load="getChildren">
+
+    <el-table :data="list" border row-key="id" lazy :load="load">
       <el-table-column label="名称" align="left" prop="name" />
       <el-table-column label="编码" prop="dictCode" />
       <el-table-column label="值" align="left" prop="value" />
@@ -53,12 +60,11 @@
 import dictApi from '@/api/core/dict'
 
 export default {
-  // 定义数据
   data() {
     return {
-      dialogVisible: false, //文件上传对话框是否显示
+      dialogVisible: false, //对话框是否显示
       BASE_API: process.env.VUE_APP_BASE_API, //获取后端接口地址
-      list: [], //数据字典列表
+      list: [] //数据字典列表
     }
   },
 
@@ -67,46 +73,49 @@ export default {
   },
 
   methods: {
+    //获取数据字典列表
+    fetchData() {
+      dictApi.listByParentId(1).then(response => {
+        this.list = response.data.list
+      })
+    },
+
     // 上传多于一个文件时
     fileUploadExceed() {
       this.$message.warning('只能选取一个文件')
     },
 
-    //上传成功回调
+    //上传成功回调：通信成功
     fileUploadSuccess(response) {
       if (response.code === 0) {
+        //业务成功
         this.$message.success('数据导入成功')
         this.dialogVisible = false
-        this.fetchData()
       } else {
+        //业务失败
         this.$message.error(response.message)
       }
     },
 
-    //上传失败回调
+    //上传失败回调：通信失败
     fileUploadError(error) {
       this.$message.error('数据导入失败')
     },
 
-    //Excel数据导出
     exportData() {
+      //导出excel并下载
       window.location.href = this.BASE_API + '/admin/core/dict/export'
     },
 
-    // 调用api层获取数据库中的数据
-    fetchData() {
-      dictApi.listByParentId(1).then((response) => {
-        this.list = response.data.list
-      })
-    },
-
-    //延迟加载子节点
-    getChildren(row, treeNode, resolve) {
-      dictApi.listByParentId(row.id).then((response) => {
-        //负责将子节点数据展示在展开的列表中
+    //加载而集节点
+    load(tree, treeNode, resolve) {
+      console.log('tree', tree)
+      console.log('treeNode', treeNode)
+      //获取数据
+      dictApi.listByParentId(tree.id).then(response => {
         resolve(response.data.list)
       })
-    },
-  },
+    }
+  }
 }
 </script>

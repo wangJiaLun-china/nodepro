@@ -5,19 +5,22 @@ export default {
     return request({
       url: `/admin/core/userInfo/list/${page}/${limit}`,
       method: 'get',
-      params: searchObj,
+      // data: searchObj //在请求体中传递json
+      params: searchObj
     })
   },
+
   lock(id, status) {
     return request({
       url: `/admin/core/userInfo/lock/${id}/${status}`,
-      method: 'put',
+      method: 'put'
     })
   },
+
   getuserLoginRecordTop50(userId) {
     return request({
       url: `/admin/core/userLoginRecord/listTop50/${userId}`,
-      method: 'get',
+      method: 'get'
     })
-  },
+  }
 }

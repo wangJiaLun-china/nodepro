@@ -9,7 +9,7 @@
       label-position="left"
     >
       <div class="title-container">
-        <h3 class="title">管理平台</h3>
+        <h3 class="title">尚融宝管理平台</h3>
       </div>
 
       <el-form-item prop="username">
@@ -52,7 +52,7 @@
       <el-button
         :loading="loading"
         type="primary"
-        style="width: 100%; margin-bottom: 30px"
+        style="width:100%;margin-bottom:30px;"
         @click.native.prevent="handleLogin"
       >
         登录
@@ -84,28 +84,28 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: '111111',
+        password: '111111'
       },
       loginRules: {
         username: [
-          { required: true, trigger: 'blur', validator: validateUsername },
+          { required: true, trigger: 'blur', validator: validateUsername }
         ],
         password: [
-          { required: true, trigger: 'blur', validator: validatePassword },
-        ],
+          { required: true, trigger: 'blur', validator: validatePassword }
+        ]
       },
       loading: false,
       passwordType: 'password',
-      redirect: undefined,
+      redirect: undefined
     }
   },
   watch: {
     $route: {
-      handler: function (route) {
+      handler: function(route) {
         this.redirect = route.query && route.query.redirect
       },
-      immediate: true,
-    },
+      immediate: true
+    }
   },
   methods: {
     showPwd() {
@@ -119,7 +119,7 @@ export default {
       })
     },
     handleLogin() {
-      this.$refs.loginForm.validate((valid) => {
+      this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
           this.$store
@@ -136,8 +136,8 @@ export default {
           return false
         }
       })
-    },
-  },
+    }
+  }
 }
 </script>
 
