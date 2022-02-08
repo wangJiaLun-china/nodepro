@@ -14,4 +14,10 @@ export default {
       method: 'put',
     })
   },
+  getuserLoginRecordTop50(userId) {
+    return request({
+      url: `/admin/core/userLoginRecord/listTop50/${userId}`,
+      method: 'get',
+    })
+  },
 }
